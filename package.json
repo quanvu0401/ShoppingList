@@ -9,13 +9,15 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "axios": "^1.7.4",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-native": "0.74.5",
-    "serpapi": "^2.1.0"
+    "serpapi": "^2.1.0",
+    "expo-camera": "~15.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

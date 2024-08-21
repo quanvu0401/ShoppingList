@@ -12,6 +12,8 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Feather } from '@expo/vector-icons';
+
 
 const MainScreen = () => {
   const [items, setItems] = useState([]);
@@ -65,15 +67,26 @@ const MainScreen = () => {
     }
   };
 
+  const removeItem = (id) => {
+    const updatedItems = items.filter((item) => item.id !== id);
+    setItems(updatedItems);
+    saveItems(updatedItems);
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.itemContainer}>
-      <Image
-        source={{ uri: item.url }}
-        style={styles.itemImage}
-      />
+    <View style={styles.itemContainer}>
+      <Image source={{ uri: item.url }} style={styles.itemImage} />
       <Text style={styles.itemText}>{item.name}</Text>
-    </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.removeButton}
+        onPress={() => removeItem(item.id)}
+      >
+        <Feather name="trash-2" size={24} color="white" />
+      </TouchableOpacity>
+    </View>
   );
+  
+  
 
   const getImageUrl = async (query) => {
     const apiKey = '88d5cef2a88af45654dd0e676fc2d2fb83a954b8fee8fdfbbd9390fa9376e40f';
@@ -170,9 +183,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
     marginBottom: 20,
+    justifyContent: 'space-between', // Align items and remove button
   },
   itemImage: {
-    width: 72, 
+    width: 72,
     height: 72,
     borderRadius: 10,
     marginRight: 15,
@@ -180,6 +194,19 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     fontWeight: '500',
+    flex: 1, // Takes up the remaining space
+  },
+  removeButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center', // Center the icon within the button
+    borderRadius: 20,
+    backgroundColor: '#FF6347',
+  },
+  removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
