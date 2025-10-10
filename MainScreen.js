@@ -14,7 +14,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { OPENAI_API_KEY, SERP_API_KEY } from '@env';
 
 const MainScreen = () => {
@@ -152,7 +152,7 @@ const MainScreen = () => {
   const encodeImageToBase64 = async (imageUri) => {
     try {
       const base64String = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64
+        encoding: 'base64'
       });
       return base64String;
     } catch (error) {
@@ -200,12 +200,24 @@ const MainScreen = () => {
       });
 
       const result = await response.json();
-      console.log("Prediction:", result.choices[0].message.content);
-      return result.choices[0].message.content.trim(); 
-
+      console.log('OpenAI API response:', result);
+      if (
+        result.choices &&
+        result.choices[0] &&
+        result.choices[0].message &&
+        result.choices[0].message.content
+      ) {
+        return result.choices[0].message.content.trim();
+      } else if (result.error && result.error.message) {
+        console.error('OpenAI API error:', result.error.message);
+        return `Prediction failed: ${result.error.message}`;
+      } else {
+        console.error('Unexpected OpenAI API response:', result);
+        return 'Prediction failed: Unexpected response';
+      }
     } catch (error) {
-      console.error("Error getting object prediction:", error);
-      return "Prediction failed";
+      console.error('Error getting object prediction:', error);
+      return 'Prediction failed';
     }
   };
 
